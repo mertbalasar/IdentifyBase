@@ -1,4 +1,5 @@
 ﻿using IdentifyBase.Domain.Commons;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IdentifyBase.Domain.Entities
 {
-    public class User : Entity
+    public class User : IdentityUser
     {
         public string Name { get; set; }
         public string Surname { get; set; }
