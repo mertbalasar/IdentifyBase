@@ -12,7 +12,6 @@
     <Folder Include="Exceptions\" />
     <Folder Include="Features\Queries\" />
     <Folder Include="ValueObjects\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,9 +5,12 @@ using IdentifyBase.Infrastructure.Persistence;
 using IdentifyBase.Infrastructure.Persistence.ContextRepositories;
 using IdentifyBase.Infrastructure.Services;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace IdentifyBase.Presentation.DependencyInjection
 {
@@ -45,6 +48,24 @@ namespace IdentifyBase.Presentation.DependencyInjection
             })
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = "http://google.com",
+                    ValidIssuer = "http://google.com",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"))
+                };
+            });
         }
 
         public static void AddServicesDI(this IServiceCollection services)

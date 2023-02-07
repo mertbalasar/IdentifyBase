@@ -1,6 +1,7 @@
 ﻿using IdentifyBase.Domain.Entities;
 using IdentifyBase.Domain.Features.Commands.User;
 using IdentifyBase.Domain.Features.Responses;
+using IdentifyBase.Domain.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,22 @@ namespace IdentifyBase.Presentation.Controllers
             }
             else
             {
-                return BadRequest();
+                return BadRequest(response.Message);
+            }
+        }
+
+        [HttpPost, Route("signin")]
+        public async Task<IActionResult> SignIn([FromBody] SignInUserCommand signInUserCommand)
+        {
+            HandlerResponse<TokenInfo> response = await _mediator.Send(signInUserCommand);
+
+            if (response.Succeed)
+            {
+                return Ok(response.Result);
+            }
+            else
+            {
+                return BadRequest(response.Message);
             }
         }
     }
