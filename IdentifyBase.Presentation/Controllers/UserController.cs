@@ -1,4 +1,7 @@
 ﻿using IdentifyBase.Domain.Entities;
+using IdentifyBase.Domain.Features.Commands.User;
+using IdentifyBase.Domain.Features.Responses;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,18 +11,26 @@ namespace IdentifyBase.Presentation.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
+        private readonly IMediator _mediator;
 
-        public UserController(UserManager<User> userManager)
+        public UserController(IMediator mediator)
         {
-            _userManager = userManager;
+            _mediator = mediator;
         }
 
-        [HttpGet, Route("")]
-        public async Task<IActionResult> GetUser()
+        [HttpPost, Route("signup")]
+        public async Task<IActionResult> SignUp([FromBody] SignUpUserCommand signUpUserCommand)
         {
-            var response = await _userManager.CreateAsync(new Domain.Entities.User() { UserName = "mertbalsr", Email = "mertblsr@gmail.com" }, "password");
-            return Ok();
+            HandlerResponse response = await _mediator.Send(signUpUserCommand);
+
+            if (response.Succeed)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

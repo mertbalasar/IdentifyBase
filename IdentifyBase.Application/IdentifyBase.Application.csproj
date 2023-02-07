@@ -10,8 +10,4 @@
     <ProjectReference Include="..\IdentifyBase.Domain\IdentifyBase.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CQRS\" />
-  </ItemGroup>
-
 </Project>

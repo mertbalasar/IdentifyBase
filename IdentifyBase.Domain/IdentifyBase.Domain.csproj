@@ -10,8 +10,8 @@
     <Folder Include="Enums\" />
     <Folder Include="Events\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Features\Commands\" />
     <Folder Include="Features\Queries\" />
+    <Folder Include="ValueObjects\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
 

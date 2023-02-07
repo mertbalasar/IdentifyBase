@@ -1,7 +1,10 @@
 ﻿using IdentifyBase.Application.Abstractions.Database;
+using IdentifyBase.Application.Abstractions.Services;
 using IdentifyBase.Domain.Entities;
 using IdentifyBase.Infrastructure.Persistence;
 using IdentifyBase.Infrastructure.Persistence.ContextRepositories;
+using IdentifyBase.Infrastructure.Services;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
@@ -42,6 +45,15 @@ namespace IdentifyBase.Presentation.DependencyInjection
             })
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
+        }
+
+        public static void AddServicesDI(this IServiceCollection services)
+        {
+            services.AddMediatR(typeof(Program));
+            var assembly = AppDomain.CurrentDomain.Load("IdentifyBase.Application");
+            services.AddMediatR(assembly);
+
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }

@@ -23,6 +23,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDatabaseConnectionDI(builder.Configuration);
 builder.Services.AddIdentityDI();
+builder.Services.AddServicesDI();
 
 var app = builder.Build();
 
