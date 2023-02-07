@@ -75,6 +75,7 @@ namespace IdentifyBase.Presentation.DependencyInjection
             services.AddMediatR(assembly);
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductService, ProductService>();
         }
     }
 }
