@@ -14,8 +14,7 @@ namespace IdentifyBase.Presentation.DependencyInjection
             services.AddEntityFrameworkNpgsql().AddDbContext<MainContext>(option =>
             {
                 option.UseNpgsql(
-                    app.GetConnectionString("DefaultConnection"));//,
-                    //b => b.MigrationsAssembly(typeof(MainContext).Assembly.FullName));
+                    app.GetConnectionString("DefaultConnection"));
             });
         }
     }
