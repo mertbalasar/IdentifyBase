@@ -113,7 +113,9 @@ namespace IdentifyBase.Infrastructure.Services
                 var claims = new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, userExist.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, userExist.Id),
+                    new Claim(ClaimTypes.Role, "standart")
                 };
 
                 var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"));

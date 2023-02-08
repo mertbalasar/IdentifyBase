@@ -5,11 +5,14 @@ using IdentifyBase.Infrastructure.Persistence;
 using IdentifyBase.Infrastructure.Persistence.ContextRepositories;
 using IdentifyBase.Infrastructure.Services;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OpenIddict.Abstractions;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Text;
 
 namespace IdentifyBase.Presentation.DependencyInjection
@@ -19,11 +22,13 @@ namespace IdentifyBase.Presentation.DependencyInjection
         public static void AddDatabaseConnectionDI(this IServiceCollection services, ConfigurationManager app)
         {
             services.AddTransient(typeof(IMainContextRepository<>), typeof(MainContextRepository<>));
+
             services.AddEntityFrameworkNpgsql().AddDbContext<MainContext>(option =>
             {
                 option.UseNpgsql(
                     app.GetConnectionString("DefaultConnection"));
             });
+
             services.AddEntityFrameworkNpgsql().AddDbContext<IdentityContext>(option =>
             {
                 option.UseNpgsql(
@@ -48,24 +53,30 @@ namespace IdentifyBase.Presentation.DependencyInjection
             })
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = "http://google.com",
-                    ValidIssuer = "http://google.com",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"))
-                };
-            });
+            })
+                .AddJwtBearer(options =>
+                    {
+                        options.SaveToken = true;
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidateLifetime= true,
+                            ValidAudience = "http://google.com",
+                            ValidIssuer = "http://google.com",
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey")),
+                            NameClaimType = ClaimTypes.NameIdentifier,
+                            RoleClaimType = ClaimTypes.Role
+                        };
+                    });
         }
 
         public static void AddServicesDI(this IServiceCollection services)
